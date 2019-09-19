@@ -8,10 +8,10 @@ import (
 	"io/ioutil"
 )
 
-const DUCKDNS_UPDATE_URL = "https://www.duckdns.org/update?domains=%s&token=%s"
+const DUCKDNS_UPDATE_URL = "https://www.duckdns.org/update?domains=%s&token=%s&verbose=true"
 
 func main () {
-	fmt.Println("Updating DuckDNS...")
+	log.Output(1, "Updating DuckDNS...")
 
 	// get the key
 	key := os.Getenv("DUCKDNS_KEY")
@@ -33,10 +33,10 @@ func main () {
 	bodyBuf, _ := ioutil.ReadAll(resp.Body)
 	body := string(bodyBuf)
 
-	if body == "KO" {
-		log.Output(1, "Update failed")
-	} else {
-		fmt.Printf("Updated ip address for %s\n", domains)
+	if body[0:2] == "OK" {
+		log.Output(1, fmt.Sprintf("Updated ip address for %s\n", domains))
 		fmt.Println(body)
+	} else {
+		log.Output(1, "Update failed")
 	}
 }
